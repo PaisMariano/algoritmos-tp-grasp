@@ -1,5 +1,6 @@
 package estrategias;
 
+import modelos.Arista;
 import modelos.Grafo;
 import modelos.Vertice;
 import java.util.*;
@@ -21,34 +22,26 @@ public class GreedyRandom extends Estrategia{
         circuito.add(verticeActual);
 
         for (int i = 1; i < largoMat; i++) {
-            Vertice verticeMasCercano = null;
-            Integer distanciaMinima = Integer.MAX_VALUE;
-            List<Vertice> verticesRandom = getVerticesRandom(visitados, g);
 
-            for(Vertice v : verticesRandom) {
-                if (!visitados[v.getId()] && v.getId()!=i && g.getPosicionMatriz(verticeActual.getId(),v.getId()) < distanciaMinima) {
-                    verticeMasCercano = g.getVertice(v.getId());
-                    distanciaMinima = g.getPosicionMatriz(verticeActual.getId(),v.getId());
-                }
-            }
+            List<Vertice> verticesRandom = getVerticesRandom(visitados, g, verticeActual);
 
-            if (verticeMasCercano != null) { //caso final.
-                verticeActual = verticeMasCercano;
+            if(verticesRandom.stream().findAny().isPresent()) {
+                verticeActual = verticesRandom.stream().findAny().get();
                 visitados[verticeActual.getId()] = true;
                 circuito.add(verticeActual);
             }
         }
+
         return circuito;
     }
 
     private List<Vertice> getVerticesRandom(boolean[] visitados, Grafo g) {
-        //obtengo 5 elementos al azar de la lista de vertices, validando que los mismos no esten visitados.
         Set<Vertice> vertices = g.getVertices();
-        ArrayList<Vertice> verticesRet = new ArrayList<>();
 
         List<Vertice> verticesNoVisitados = vertices.stream()
                 .filter(v->!visitados[v.getId()])
                 .collect(Collectors.toList());
+
         Collections.shuffle(verticesNoVisitados);
 
         return verticesNoVisitados.stream()
@@ -56,4 +49,26 @@ public class GreedyRandom extends Estrategia{
                 .collect(Collectors.toList());
     }
 
+    private List<Vertice> getVerticesRandom(boolean[] visitados, Grafo g, Vertice verticeOrigen) {
+        Set<Vertice> vertices = g.getVertices();
+        List<Arista> aristas = new ArrayList<>();
+
+        List<Vertice> verticesNoVisitados = vertices.stream()
+                .filter(v->!visitados[v.getId()])
+                .collect(Collectors.toList());
+
+        for (Vertice v : verticesNoVisitados) {
+            int costoVertice = g.getPosicionMatriz(verticeOrigen.getId(), v.getId());
+            Arista aristaTemp = new Arista(verticeOrigen, v, costoVertice);
+            aristas.add(aristaTemp);
+        }
+
+        Collections.sort(aristas);
+
+        //pasar el 5 % como parametros o 2
+        return aristas.stream()
+                .limit(Math.max(2,vertices.size() * 5 / 100))
+                .map(arista -> arista.getDestino())
+                .collect(Collectors.toList());
+    }
 }
