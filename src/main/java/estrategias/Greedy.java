@@ -14,7 +14,9 @@ public class Greedy extends Estrategia{
         List<Vertice> circuito = new ArrayList<>();
         Random rand = new Random();
 
-        Vertice verticeOriginal = (Vertice) g.getVertices().get(rand.nextInt((g.getVertices().size()-1 - 0) + 1));
+        Vertice verticeOriginal = (Vertice) g.getVertices()
+                .get(rand.nextInt((g.getVertices().size()-1 - 0) + 1));
+
         Vertice verticeActual = verticeOriginal;
 
         visitados[verticeActual.getId()] = true;

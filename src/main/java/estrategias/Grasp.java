@@ -19,7 +19,7 @@ public class Grasp {
         this.busqLoc = bl;
         this.printer = new Printer();
 
-        printer.imprimir(g);
+        //printer.imprimir(g);
     }
     /*Se definen multiples parametros para pruebas:
         Tag de la curva del grafico. (tag)
@@ -35,6 +35,7 @@ public class Grasp {
 
         for (int i = 0; i < vecesGrasp; i++) {
             List circuito = greedy.calcular(this.g);
+
             List circuitoMejorado = busqLoc.busquedaLocal(vecesBL, porcMejora, this.g, circuito);
             float costoCircuitoActual = busqLoc.getCostoCircuito(this.g, circuitoMejorado);
 
@@ -43,8 +44,10 @@ public class Grasp {
                 mejorCostoCircuito = costoCircuitoActual;
             }
             printer.setDatoGrafico(mejorCostoCircuito, tag, String.valueOf(i));
-            printer.imprimir(mejorCircuito);
+            //printer.imprimir(mejorCircuito);
         }
+        System.out.print(tag + " costo: " + mejorCostoCircuito);
+        printer.imprimir(mejorCircuito);
     }
 
     public void setGreedy(Estrategia greedy) {

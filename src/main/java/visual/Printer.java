@@ -5,10 +5,16 @@ import modelos.Vertice;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 public class Printer {
@@ -27,7 +33,12 @@ public class Printer {
                 true,
                 false,
                 false);
+
+
+        final CategoryPlot plot = grafico.getCategoryPlot();
+        configurePlot(plot);
         ChartPanel cPanel = new ChartPanel(grafico);
+
         JFrame frame = new JFrame("Gráfico");
         frame.getContentPane().add(cPanel);
         frame.pack();
@@ -51,4 +62,23 @@ public class Printer {
             System.out.println("");
         }
     }
+
+    private void configurePlot(CategoryPlot plot) {
+        plot.setBackgroundPaint(Color.BLACK);
+        plot.setOutlinePaint(null);
+        plot.setRangeGridlinesVisible(true);
+        plot.setRangeGridlinePaint(Color.white);
+
+        configureRenderer((LineAndShapeRenderer) plot.getRenderer());
+
+    }
+
+    protected void configureRenderer(LineAndShapeRenderer renderer) {
+        renderer.setBaseStroke(new BasicStroke(3));
+
+        for (int i = 0; i < datos.getRowCount(); i++){
+            renderer.setSeriesStroke(i, new BasicStroke(5.0f));
+        }
+    }
+
 }

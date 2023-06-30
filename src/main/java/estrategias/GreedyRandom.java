@@ -15,9 +15,7 @@ public class GreedyRandom extends Estrategia{
         Random rand = new Random();
 
         Vertice verticeActual = (Vertice) g.getVertices()
-                .stream()
-                .findAny()
-                .get();
+                .get(rand.nextInt((g.getVertices().size()-1 - 0) + 1));
 
         visitados[verticeActual.getId()] = true;
         circuito.add(verticeActual);
@@ -25,8 +23,8 @@ public class GreedyRandom extends Estrategia{
         for (int i = 1; i < largoMat; i++) {
 
             List<Vertice> verticesRandom = getVerticesRandom(visitados, g, verticeActual);
-
             if(verticesRandom.stream().findAny().isPresent()) {
+                int x = verticeActual.getId();
                 verticeActual = verticesRandom.get(rand.nextInt((verticesRandom.size()-1 - 0) + 1) + 0);
 
                 visitados[verticeActual.getId()] = true;
