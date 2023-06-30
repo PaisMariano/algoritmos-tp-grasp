@@ -1,37 +1,24 @@
 package modelos;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 public class Grafo {
     int[][] matriz;
-    HashSet<Vertice> v;
+    List<Vertice> v;
 
     public Grafo(int dimension) {
-        v = new HashSet<>();
+        v = new ArrayList();
         generarMatrizHardcodeDistanciaRandom(dimension);
-    }
-
-    private void generarMatrizHardcode(int dimension) {
-        int[][] matrizTemp = new int[dimension][dimension];
-
-        for (int i = 1; i < dimension; i++) {
-            v.add(new Vertice(i));
-            for (int j = 1; j < dimension; j++) {
-                matrizTemp[i][j] = 5;
-                if (i == j) {
-                    matrizTemp[i][j] = Integer.MAX_VALUE;
-                }
-            }
-        }
-        matriz = matrizTemp;
     }
 
     private void generarMatrizHardcodeDistanciaRandom(int dimension){
         int[][] matrizTemp = new int[dimension][dimension];
         Random rand = new Random();
         int min = 1;
-        int max = 9;
+        int max = 600;
 
         for (int i = 1; i < dimension; i++) {
             v.add(new Vertice(i));
@@ -54,7 +41,7 @@ public class Grafo {
         return matriz[posX][posY];
     }
 
-    public HashSet getVertices() {
+    public List getVertices() {
         return v;
     }
 

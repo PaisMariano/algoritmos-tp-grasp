@@ -4,6 +4,7 @@ import modelos.Grafo;
 import modelos.Vertice;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Greedy extends Estrategia{
     @Override
@@ -11,8 +12,9 @@ public class Greedy extends Estrategia{
         Integer largoMat = g.getMatrizAdyacencias().length;
         boolean[] visitados = new boolean[largoMat];
         List<Vertice> circuito = new ArrayList<>();
+        Random rand = new Random();
 
-        Vertice verticeOriginal = (Vertice) g.getVertices().stream().findAny().get();
+        Vertice verticeOriginal = (Vertice) g.getVertices().get(rand.nextInt((g.getVertices().size()-1 - 0) + 1));
         Vertice verticeActual = verticeOriginal;
 
         visitados[verticeActual.getId()] = true;
@@ -33,8 +35,6 @@ public class Greedy extends Estrategia{
                 verticeActual = verticeMasCercano;
                 visitados[verticeActual.getId()] = true;
                 circuito.add(verticeActual);
-            } else {
-                circuito.add(verticeOriginal);
             }
         }
 

@@ -12,6 +12,7 @@ public class GreedyRandom extends Estrategia{
         Integer largoMat = g.getMatrizAdyacencias().length;
         boolean[] visitados = new boolean[largoMat];
         List<Vertice> circuito = new ArrayList<>();
+        Random rand = new Random();
 
         Vertice verticeActual = (Vertice) g.getVertices()
                 .stream()
@@ -26,7 +27,8 @@ public class GreedyRandom extends Estrategia{
             List<Vertice> verticesRandom = getVerticesRandom(visitados, g, verticeActual);
 
             if(verticesRandom.stream().findAny().isPresent()) {
-                verticeActual = verticesRandom.stream().findAny().get();
+                verticeActual = verticesRandom.get(rand.nextInt((verticesRandom.size()-1 - 0) + 1) + 0);
+
                 visitados[verticeActual.getId()] = true;
                 circuito.add(verticeActual);
             }
@@ -36,7 +38,7 @@ public class GreedyRandom extends Estrategia{
     }
 
     private List<Vertice> getVerticesRandom(boolean[] visitados, Grafo g) {
-        Set<Vertice> vertices = g.getVertices();
+        List<Vertice> vertices = g.getVertices();
 
         List<Vertice> verticesNoVisitados = vertices.stream()
                 .filter(v->!visitados[v.getId()])
@@ -50,7 +52,7 @@ public class GreedyRandom extends Estrategia{
     }
 
     private List<Vertice> getVerticesRandom(boolean[] visitados, Grafo g, Vertice verticeOrigen) {
-        Set<Vertice> vertices = g.getVertices();
+        List<Vertice> vertices = g.getVertices();
         List<Arista> aristas = new ArrayList<>();
 
         List<Vertice> verticesNoVisitados = vertices.stream()
@@ -65,9 +67,9 @@ public class GreedyRandom extends Estrategia{
 
         Collections.sort(aristas);
 
-        //pasar el 5 % como parametros o 2
+        //pasar el 5 % como parametros o 3
         return aristas.stream()
-                .limit(Math.max(2,vertices.size() * 5 / 100))
+                .limit(Math.max(3,vertices.size() * 5 / 100))
                 .map(arista -> arista.getDestino())
                 .collect(Collectors.toList());
     }

@@ -1,6 +1,4 @@
-import estrategias.BusquedaLocal;
-import estrategias.Estrategia;
-import estrategias.GreedyRandom;
+import estrategias.*;
 import modelos.Grafo;
 import modelos.Vertice;
 import org.jfree.chart.ChartFactory;
@@ -17,51 +15,33 @@ import java.util.List;
 public class Procedure {
 
     public static void main(String[] args) {
-        DefaultCategoryDataset datos = new DefaultCategoryDataset();
 
-        //Parametros:
-        Grafo g = new Grafo(10);
-        Estrategia greedy = new GreedyRandom();
+        //Grafos:
+        Grafo g1 = new Grafo(10);
+        Grafo g2 = new Grafo(50);
+        Grafo g3 = new Grafo(300);
+
+        //Estrategias y BL
+        Estrategia greedyRandom = new GreedyRandom();
+        Estrategia greedy = new Greedy();
         BusquedaLocal busquedaLocal = new BusquedaLocal();
-        int vecesMax = 7;
-        int recorridoActual = 0;
-        float mejorCostoCircuito = 0;
-        List<Vertice> mejorCircuito = new ArrayList();
 
-        //Procedure
-        List circuito = greedy.calcular(g);
-        List circuitoMejorado = circuito;
+        //Grasp prueba1 con diversos parametros
+        Grasp grasp = new Grasp(g1,greedy,busquedaLocal);
+        grasp.ejecutarGrasp("grasp0",10, 5, 5, 0.0f);
+        grasp.ejecutarGrasp("grasp1",10, 5, 10, 0.0f);
+        grasp.ejecutarGrasp("grasp2",10, 5, 20, 0.0f);
 
-        while (recorridoActual < vecesMax){
-            circuitoMejorado = busquedaLocal.mejorarCircuitoNVeces(1, 0.0f, g, circuitoMejorado);
-            float costoCircuitoActual = busquedaLocal.getCostoCircuito(g, circuitoMejorado);
+        grasp.setGreedy(greedyRandom);
+        grasp.ejecutarGrasp("grasp3",10, 5, 5, 0.0f);
+        grasp.ejecutarGrasp("grasp4",10, 5, 10, 0.0f);
+        grasp.ejecutarGrasp("grasp5",10, 5, 20, 0.0f);
 
-            System.out.println(costoCircuitoActual);
-            datos.addValue(costoCircuitoActual, "Grafica 1", String.valueOf(recorridoActual));
+        grasp.ejecutarGrasp("grasp6",10, 5, 100, 0.1f);
+        grasp.ejecutarGrasp("grasp7",10, 5, 100, 0.05f);
+        grasp.ejecutarGrasp("grasp8",10, 5, 100, 0.02f);
 
-            if (costoCircuitoActual < mejorCostoCircuito) {
-                mejorCircuito = circuitoMejorado;
-                mejorCostoCircuito = costoCircuitoActual;
-            }
+        grasp.imprimirGrasp();
 
-            recorridoActual++;
-
-        }
-        JFreeChart grafico = ChartFactory.createLineChart3D(
-                "Gráfico Viajero",
-                "Eje X",
-                "Eje Y",
-                datos,
-                PlotOrientation.VERTICAL,
-                true,
-                false,
-                false);
-        ChartPanel cPanel = new ChartPanel(grafico);
-        JFrame frame = new JFrame("Gráfico");
-        frame.getContentPane().add(cPanel);
-        frame.pack();
-        frame.setVisible(true);
-        Printer.imprimir(mejorCircuito);
-        System.out.println("Costo circuito mejorado luego de "+vecesMax+" recorridos: "+mejorCostoCircuito);
     }
 }

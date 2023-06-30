@@ -7,7 +7,8 @@ import java.util.List;
 
 public class BusquedaLocal {
 
-    private List<Vertice> mejorarCircuito(Grafo g, List<Vertice> circuito) {
+    //busqueda vecindad
+    private List<Vertice> busquedaVecindadMejorYCorto(Grafo g, List<Vertice> circuito) {
         List<Vertice> lista = circuito;
         boolean mejoro = false;
         int i = 0;
@@ -37,12 +38,39 @@ public class BusquedaLocal {
         return lista;
     }
 
-    public List<Vertice> mejorarCircuitoNVeces(int cantVeces, float porcentajeMejora, Grafo g, List<Vertice> circuito) {
+    private List<Vertice> busquedaVecindad(Grafo g, List<Vertice> circuito) {
+        List<Vertice> lista = circuito;
+
+        for (int i = 0; i < lista.size(); i++) {
+            List<Vertice> listaSwapeada = new ArrayList<>();
+            listaSwapeada.addAll(lista.subList(0, i+1));
+            if (i+3 == lista.size()) {
+                listaSwapeada.addAll(lista.subList(i, i+3));
+                i = i+3;
+            } else {
+                listaSwapeada.add(lista.get(i + 2));
+                listaSwapeada.add(lista.get(i + 1));
+                listaSwapeada.addAll(lista.subList(i + 3, lista.size()));
+            }
+
+            float costoCircuito = getCostoCircuito(g, lista);
+            float costoCircuitoSwap = getCostoCircuito(g, listaSwapeada);
+
+            if (costoCircuitoSwap < costoCircuito) {
+                lista = listaSwapeada;
+            }
+
+        }
+        return lista;
+    }
+
+    //busqueda Local
+    public List<Vertice> busquedaLocal(int cantVeces, float porcentajeMejora, Grafo g, List<Vertice> circuito) {
         int vecesLocal = 0;
         float porcentajeLocal = 100;
 
         while (cantVeces > vecesLocal && porcentajeLocal > porcentajeMejora) {
-            List<Vertice> vertices = mejorarCircuito(g, circuito);
+            List<Vertice> vertices = busquedaVecindad(g, circuito);
 
             float costoCircuito = getCostoCircuito(g, circuito);
             float costoMejorado = getCostoCircuito(g, vertices);
