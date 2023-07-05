@@ -29,24 +29,26 @@ public class Grasp {
         Porcentaje a superar por cada iteracion para seguir ejecutando. (porcMejora)
      */
 
+    //o(cantVecesGrasp * cantVecesBL * n^2)
     public void ejecutarGrasp(String tag, int vecesGrasp, int porcentajeItRandom, int vecesBL, float porcMejora){
         float mejorCostoCircuito = Integer.MAX_VALUE;
         List<Vertice> mejorCircuito = new ArrayList();
+        printer.createSerie(tag);
 
-        for (int i = 0; i < vecesGrasp; i++) {
+        for (int i = 0; i < vecesGrasp; i++) { //o(vecesGrasp)
             List circuito = greedy.calcular(this.g);
 
-            List circuitoMejorado = busqLoc.busquedaLocal(vecesBL, porcMejora, this.g, circuito);
+            List circuitoMejorado = busqLoc.busquedaLocal(vecesBL, porcMejora, this.g, circuito, tag);
             float costoCircuitoActual = busqLoc.getCostoCircuito(this.g, circuitoMejorado);
 
             if (costoCircuitoActual < mejorCostoCircuito) {
                 mejorCircuito = circuitoMejorado;
                 mejorCostoCircuito = costoCircuitoActual;
             }
-            printer.setDatoGrafico(mejorCostoCircuito, tag, String.valueOf(i));
+            printer.setDatoGrafico(i, mejorCostoCircuito, tag);
             //printer.imprimir(mejorCircuito);
         }
-        System.out.print(tag + " costo: " + mejorCostoCircuito);
+        System.out.print(tag + " costo: " + mejorCostoCircuito + " ");
         printer.imprimir(mejorCircuito);
     }
 

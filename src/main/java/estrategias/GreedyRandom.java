@@ -8,23 +8,23 @@ import java.util.stream.Collectors;
 
 public class GreedyRandom extends Estrategia{
     @Override
+    //o(n^2*log(n))
     public List<Vertice> calcular(Grafo g) {
-        Integer largoMat = g.getMatrizAdyacencias().length;
-        boolean[] visitados = new boolean[largoMat];
+        Integer largoMat = g.getMatrizAdyacencias().length; //o(n)
+        boolean[] visitados = new boolean[largoMat]; //o(n)
         List<Vertice> circuito = new ArrayList<>();
         Random rand = new Random();
 
         Vertice verticeActual = (Vertice) g.getVertices()
-                .get(rand.nextInt((g.getVertices().size()-1 - 0) + 1));
+                .get(rand.nextInt((g.getVertices().size()-1 - 0) + 1));  //o(1)
 
         visitados[verticeActual.getId()] = true;
         circuito.add(verticeActual);
 
-        for (int i = 1; i < largoMat; i++) {
+        for (int i = 1; i < largoMat; i++) { //o(n)*
 
             List<Vertice> verticesRandom = getVerticesRandom(visitados, g, verticeActual);
             if(verticesRandom.stream().findAny().isPresent()) {
-                int x = verticeActual.getId();
                 verticeActual = verticesRandom.get(rand.nextInt((verticesRandom.size()-1 - 0) + 1) + 0);
 
                 visitados[verticeActual.getId()] = true;
@@ -55,20 +55,20 @@ public class GreedyRandom extends Estrategia{
 
         List<Vertice> verticesNoVisitados = vertices.stream()
                 .filter(v->!visitados[v.getId()])
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); //o(n)
 
-        for (Vertice v : verticesNoVisitados) {
+        for (Vertice v : verticesNoVisitados) { //o(n)
             int costoVertice = g.getPosicionMatriz(verticeOrigen.getId(), v.getId());
             Arista aristaTemp = new Arista(verticeOrigen, v, costoVertice);
             aristas.add(aristaTemp);
         }
 
-        Collections.sort(aristas);
+        Collections.sort(aristas); //o(n*log(n))
 
         //pasar el 5 % como parametros o 3
         return aristas.stream()
                 .limit(Math.max(3,vertices.size() * 5 / 100))
                 .map(arista -> arista.getDestino())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); //o(n)
     }
 }

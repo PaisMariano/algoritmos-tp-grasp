@@ -5,26 +5,34 @@ import modelos.Vertice;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
 public class Printer {
-    DefaultCategoryDataset datos = new DefaultCategoryDataset();
+    XYSeriesCollection datos = new XYSeriesCollection();
 
-    public void setDatoGrafico(float valy, String tag, String posx) {
-        datos.addValue(valy, tag, posx);
+    public void createSerie(String tag){
+        XYSeries series1 = new XYSeries(tag);
+
+        datos.addSeries(series1);
     }
+    public void setDatoGrafico(float x, float y, String tag) {
+
+        XYSeries series1 = datos.getSeries(tag);
+        series1.add(x,y);
+    }
+
     public void graficar(){
-        JFreeChart grafico = ChartFactory.createLineChart(
+        JFreeChart grafico = ChartFactory.createXYLineChart(
                 "",
                 "# Iteraciones",
                 "Puntaje",
@@ -34,8 +42,7 @@ public class Printer {
                 false,
                 false);
 
-
-        final CategoryPlot plot = grafico.getCategoryPlot();
+        XYPlot plot = grafico.getXYPlot();
         configurePlot(plot);
         ChartPanel cPanel = new ChartPanel(grafico);
 
@@ -62,21 +69,24 @@ public class Printer {
             System.out.println("");
         }
     }
-
-    private void configurePlot(CategoryPlot plot) {
+    private void configurePlot(XYPlot plot) {
         plot.setBackgroundPaint(Color.BLACK);
         plot.setOutlinePaint(null);
         plot.setRangeGridlinesVisible(true);
         plot.setRangeGridlinePaint(Color.white);
 
-        configureRenderer((LineAndShapeRenderer) plot.getRenderer());
+        NumberAxis xAxis = new NumberAxis();
 
+        xAxis.setTickUnit(new NumberTickUnit(1));
+
+        plot.setDomainAxis(xAxis);
+        configureRenderer(plot.getRenderer());
     }
-
-    protected void configureRenderer(LineAndShapeRenderer renderer) {
+    protected void configureRenderer(
+            XYItemRenderer renderer) {
         renderer.setBaseStroke(new BasicStroke(3));
 
-        for (int i = 0; i < datos.getRowCount(); i++){
+        for (int i = 0; i < datos.getSeriesCount(); i++){
             renderer.setSeriesStroke(i, new BasicStroke(5.0f));
         }
     }
